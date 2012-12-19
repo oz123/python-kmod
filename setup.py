@@ -39,7 +39,7 @@ for filename in sorted(_os.listdir(package_name)):
     if extension == '.pyx':
         ext_modules.append(
             _Extension(
-                '{}.{}'.format(package_name, basename),
+                '{0}.{1}'.format(package_name, basename),
                 [_os.path.join(package_name, filename)],
                 libraries=['kmod'],
                 ))
@@ -50,6 +50,8 @@ setup(
     description='Python binding for kmod',
     packages=[package_name],
     provides=[package_name],
+    maintainer="Andy Grover",
+    maintainer_email="agrover@redhat.com",
     cmdclass = {'build_ext': _build_ext},
     ext_modules=ext_modules,
     )
