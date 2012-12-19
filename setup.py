@@ -17,10 +17,46 @@
 
 from distutils.core import setup
 from distutils.extension import Extension as _Extension
+from distutils.command import clean as CleanComm
+from distutils.dir_util import remove_tree
+from distutils import log
+from Cython.Distutils import build_ext as _build_ext
+
 import os as _os
 import sys as _sys
 
-from Cython.Distutils import build_ext as _build_ext
+class CleanCommand(CleanComm.clean):
+    def run(self):
+        # remove the build/temp.<plat> directory (unless it's already
+        # gone)
+        if _os.path.exists(self.build_temp):
+            remove_tree(self.build_temp, dry_run=self.dry_run)
+        else:
+            log.debug("'%s' does not exist -- can't clean it",
+                      self.build_temp)
+
+        if self.all:
+            # remove build directories
+            for directory in (self.build_lib,
+                              self.bdist_base,
+                              self.build_scripts):
+                if _os.path.exists(directory):
+                    remove_tree(directory, dry_run=self.dry_run)
+                else:
+                    log.warn("'%s' does not exist -- can't clean it",
+                             directory)
+
+        _os.system("find . -iname *.c | xargs rm -vf")
+        _os.system("find . -iname *.pyc | xargs rm -vf")
+
+        # just for the heck of it, try to remove the base build directory:
+        # we might have emptied it right now, but if not we don't care
+        if not self.dry_run:
+            try:
+                _os.rmdir(self.build_base)
+                log.info("removing '%s'", self.build_base)
+            except OSError:
+                pass
 
 
 package_name = 'kmod'
@@ -52,6 +88,7 @@ setup(
     provides=[package_name],
     maintainer="Andy Grover",
     maintainer_email="agrover@redhat.com",
-    cmdclass = {'build_ext': _build_ext},
+    cmdclass = {'build_ext': _build_ext,
+                'clean': CleanCommand},
     ext_modules=ext_modules,
     )
