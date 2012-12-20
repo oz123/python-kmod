@@ -1,0 +1,23 @@
+Source: python-kmod
+Section: python
+Priority: optional
+Maintainer: Oz Nahum <nahumoz@gmail.com>
+Build-Depends: python (>= 2.6), debhelper (>= 9)
+Standards-Version: 3.9.3
+Homepage: https://github.com/agrover/python-kmod
+Vcs-Git: https://github.com/agrover/python-kmod.git
+Vcs-Browser: https://github.com/agrover/python-kmod.git
+
+Package: python-kmod
+Architecture: any
+Depends: ${python:Depends}, ${misc:Depends}, libkmod-dev, cython, 
+ ${shlibs:Depends}
+Description: Python bindings for kmod/libkmod
+ kmod is a set of tools to handle common tasks with Linux kernel
+ modules like insert, remove, list, check properties, resolve 
+ dependencies and aliases.
+ These tools are designed on top of libkmod, a library that is 
+ shipped with kmod. It can be found at:
+ http://git.kernel.org/?p=utils/kernel/kmod/kmod.git;a=summary
+ python-kmod is a Python wrapper module for libkmod, exposing common 
+ module operations: listing installed modules, modprobe, and rmmod. 
